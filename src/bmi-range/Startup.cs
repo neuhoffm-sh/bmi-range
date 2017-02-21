@@ -18,13 +18,7 @@ namespace bmi_range
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            if (env.IsEnvironment("Development"))
-            {
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
-            }
-
+            
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -35,7 +29,6 @@ namespace bmi_range
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddApplicationInsightsTelemetry(Configuration);
             services.AddMvc();
         }
 
@@ -45,10 +38,8 @@ namespace bmi_range
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseApplicationInsightsRequestTelemetry();
-
-            app.UseApplicationInsightsExceptionTelemetry();
             app.UseMvc();
+            app.UseWelcomePage();
         }
     }
 }
